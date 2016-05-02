@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	
+	<h1>Number of people after the second first analysis: <h2 id="first"></h2> </h1>
+	<h1>Number of people after the second analysis: <h2 id="second"></h2> </h1>
+
+	<script>
+
+	
+	var maxNrHead = 115;
+	var maxNrTail = 85;
+	var nrOfPpl = 0, ppl = 0;
+
+	d3.csv("CoinToss.csv", function(error, data) {
+		if (error) throw error;
+		var coinTosses = [];
+		
+		data.forEach(function(d, i){
+			ppl += checkDeviation(d.Person);
+			//coinTosses.push(checkDeviation(d.Person));
+			
+		});
+	
+		init();
+		
+	});
+
+	function checkDeviation(d){
+		var head = 0, tail = 0;
+
+		for(var i = 0; i < d.length; i++){
+			if(d[i] == '0')
+				head++;
+			else
+				tail++;
+		}
+
+		if(head < maxNrHead || tail > maxNrTail){
+			checkPattern(d)
+			return 1;
+			
+		}
+		else 
+			return 0;
+		
+	}
+
+	// look for pattern 
+	function checkPattern(d){
+		var nrInRow = 0, pattern = 0;
+		
+		var str = d.toString();
+
+		for(var n = 0; n < 200; n++){
+			if(str.charAt(n) == str.charAt(n+1)){
+				nrInRow++;
+				if(nrInRow >= 6){
+					pattern = 1;
+					nrInRow = 0;
+					break;
+				}
+			}
+			else
+				nrInRow = 0;
+		}
+
+		if(pattern == 0)
+			nrOfPpl++;
+	}
+
+	function init(){
+		document.getElementById("first").innerHTML = ppl;
+
+		document.getElementById("second").innerHTML = nrOfPpl;
+	}
+		
+	</script>
+
+</body>
+</html>
